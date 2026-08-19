@@ -55,7 +55,7 @@ If the obfuscator uses dynamic delegates or emulation for string decryption:
 
 ## Execution Environments
 
-### Mode A: Native .NET 8.0 Docker Container (Static / Fast)
+### Mode A: Native .NET 10 Docker Container (Static / Fast)
 Runs natively at peak speed. Fully supports ConfuserEx 1.X, Babel, and SmartAssembly.
 ```bash
 docker run --rm -v "$(pwd):/work" -w /work de4dotex <input_file> -o <output_file>
@@ -77,7 +77,7 @@ Command for registering inside your MCP client config (`claude_desktop_config.js
 "mcpServers": {
   "de4dotex": {
     "command": "dotnet",
-    "args": ["/absolute/path/to/publish-net8.0-mcp/de4dot.mcp.dll"]
+    "args": ["/absolute/path/to/publish-net10.0-mcp/de4dot.mcp.dll"]
   }
 }
 ```

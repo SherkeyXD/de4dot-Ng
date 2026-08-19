@@ -1,7 +1,7 @@
 # ==============================================================================
 # STAGE 1: Build the .NET Framework 4.8 Targets natively on Linux
 # ==============================================================================
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS dotnet-framework-builder
+FROM mcr.microsoft.com/dotnet/sdk:10.0 AS dotnet-framework-builder
 WORKDIR /src
 
 # Copy all files

@@ -1,11 +1,11 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net48;net7.0</TargetFrameworks>
+    <TargetFrameworks>net48;net10.0</TargetFrameworks>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>..\de4dot.snk</AssemblyOriginatorKeyFile>
     <Features>strict</Features>
-    <LangVersion>latest</LangVersion>
+    <LangVersion>14.0</LangVersion>
     <OutputPath>..\$(Configuration)</OutputPath>
   </PropertyGroup>
 

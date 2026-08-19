@@ -2,237 +2,177 @@ name: CI Build
 
 on:
   push:
-    branches: [ "master" ]
-    tags: [ "*" ]
+    branches: ["master"]
+    tags: ["*"]
   pull_request:
-    branches: [ "master" ]
+    branches: ["master"]
   workflow_dispatch:
 
-env:
-  DOTNET_RUNTIME: net8.0
-  SETUP_DOTNET_VERSION: 8.0.x
+permissions:
+  contents: read
 
+env:
+  DOTNET_RUNTIME: net10.0
+  SETUP_DOTNET_VERSION: 10.0.x
   BEAENGINE_TAG: v5.3.0
 
 jobs:
-  build-windows:
-    name: Build Windows artifacts
+  build-net48:
+    name: Build .NET Framework 4.8 artifact
     runs-on: windows-latest
-
     steps:
       - uses: actions/checkout@v6
-
+      - name: Set up .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: ${{ env.SETUP_DOTNET_VERSION }}
       - name: Build
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
           $msbuildPath = Split-Path (& "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\Current\Bin\amd64\MSBuild.exe | Select-Object -First 1) -Parent
           $env:PATH = "$msbuildPath;$env:PATH"
-
           dotnet build -c Release -f net48 de4dot.netframework.sln
           if ($LASTEXITCODE) { exit $LASTEXITCODE }
           Remove-Item Release\net48\*.pdb, Release\net48\*.xml, Release\net48\Test.Rename.*
-
-          dotnet publish -c Release -f $env:DOTNET_RUNTIME -o publish-$env:DOTNET_RUNTIME de4dot
-          Remove-Item publish-$env:DOTNET_RUNTIME\*.pdb, publish-$env:DOTNET_RUNTIME\*.xml
-
-      - name: Build BeaEngine
+      - name: Build BeaEngine for .NET Framework
         shell: pwsh
         run: |
           $ErrorActionPreference = 'Stop'
-
           git clone --depth 1 --branch $env:BEAENGINE_TAG https://github.com/BeaEngine/beaengine.git beaengine
-
           $cmakelists = 'beaengine/CMakeLists.txt'
-
-          # Remove cmake malpractice (would prevent -DCMAKE_MSVC_RUNTIME_LIBRARY)
           (Get-Content $cmakelists) |
             Where-Object { $_ -notmatch '\s*list\s*\(APPEND\s+BEA_FLAGS\s+/M' } |
             Set-Content $cmakelists
-
-          # Compatibility with 2026
-          (Get-Content $cmakelists) |
-            ForEach-Object {
-              if ($_ -match '^\s*cmake_minimum_required\s*\(') {
-                @('cmake_minimum_required(VERSION 3.5)',
-                  'cmake_policy(VERSION 3.5)')
-              } else {
-                $_
-              }
-            } | Set-Content -Encoding UTF8 $cmakelists
-
-          # Win32 for .NET 4.8
-          cmake -S beaengine -B build-beaengine-32 `
-            -A Win32 `
-            -DoptBUILD_DLL=ON `
-            -DoptHAS_OPTIMIZED=ON `
-            -DoptHAS_SYMBOLS=OFF `
+          cmake -S beaengine -B build-beaengine-32 -A Win32 `
+            -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF `
             -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
-
           cmake --build build-beaengine-32 --config Release
-
           $dll32 = Get-ChildItem -Recurse build-beaengine-32 -Filter BeaEngine*.dll | Select-Object -First 1
-
-          if (-not $dll32) {
-            throw "32-bit BeaEngine.dll not found"
-          }
-
+          if (-not $dll32) { throw "32-bit BeaEngine.dll not found" }
           Copy-Item $dll32.FullName Release/net48/BeaEngine.dll
+          New-Item -ItemType Directory -Force Release/net48/LICENSES | Out-Null
           Copy-Item beaengine/src/COPYING.txt Release/net48/LICENSES/LICENSE.BeaEngine.GPL.txt
           Copy-Item beaengine/src/COPYING.LESSER.txt Release/net48/LICENSES/LICENSE.BeaEngine.LGPL.txt
-
-          # Win64 for .NET 8+
-          cmake -S beaengine -B build-beaengine-64 `
-            -A x64 `
-            -DoptBUILD_DLL=ON `
-            -DoptHAS_OPTIMIZED=ON `
-            -DoptHAS_SYMBOLS=OFF `
-            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
-
-          cmake --build build-beaengine-64 --config Release
-
-          $dll64 = Get-ChildItem -Recurse build-beaengine-64 -Filter BeaEngine*.dll | Select-Object -First 1
-
-          if (-not $dll64) {
-            throw "64-bit BeaEngine.dll not found"
-          }
-
-          Copy-Item $dll64.FullName publish-$env:DOTNET_RUNTIME/BeaEngine.dll
-          Copy-Item beaengine/src/COPYING.txt publish-$env:DOTNET_RUNTIME/LICENSES/LICENSE.BeaEngine.GPL.txt
-          Copy-Item beaengine/src/COPYING.LESSER.txt publish-$env:DOTNET_RUNTIME/LICENSES/LICENSE.BeaEngine.LGPL.txt
-
       - uses: actions/upload-artifact@v7
         with:
           name: de4dotEx-net48
           path: Release/net48
 
-      - uses: actions/upload-artifact@v7
-        with:
-          name: de4dotEx-${{ env.DOTNET_RUNTIME }}-win-x64
-          path: publish-${{ env.DOTNET_RUNTIME }}
-
-  build-linux:
-    name: Build Linux artifacts & package .deb
-    runs-on: ubuntu-latest
-
+  build-native:
+    name: Build ${{ matrix.rid }} artifact
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - rid: osx-arm64
+            runner: macos-14
+            library: libBeaEngine.dylib
+          - rid: win-x64
+            runner: windows-latest
+            cmake_arch: x64
+            library: BeaEngine.dll
+          - rid: win-arm64
+            runner: windows-11-arm
+            cmake_arch: ARM64
+            library: BeaEngine.dll
+          - rid: linux-x64
+            runner: ubuntu-24.04
+            library: libBeaEngine.so
+          - rid: linux-arm64
+            runner: ubuntu-24.04-arm
+            library: libBeaEngine.so
+    runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v6
-
       - name: Set up .NET
         uses: actions/setup-dotnet@v6
         with:
           dotnet-version: ${{ env.SETUP_DOTNET_VERSION }}
-
-      - name: Publish ${{ env.DOTNET_RUNTIME }}
-        run: |
-          dotnet publish -c Release -f "${DOTNET_RUNTIME}" -o publish-${DOTNET_RUNTIME} de4dot
-          rm -rf publish-${DOTNET_RUNTIME}/*.pdb publish-${DOTNET_RUNTIME}/*.xml
-
-      - name: Build BeaEngine
+      - name: Publish
+        shell: bash
         run: |
           set -euo pipefail
-
-          git clone --depth 1 --branch "$BEAENGINE_TAG" https://github.com/BeaEngine/beaengine.git
-
-          cmake -S beaengine -B build64 \
-            -DoptBUILD_DLL=ON \
-            -DoptHAS_OPTIMIZED=ON \
-            -DoptHAS_SYMBOLS=OFF
-
-          cmake --build build64
-
-          so64=$(find build64 -name "libBeaEngine*.so" | head -n 1)
-          [[ -n "$so64" ]] || { echo "libBeaEngine not found"; exit 1; }
-
-          cp "$so64" publish-${DOTNET_RUNTIME}/libBeaEngine.so
-          cp beaengine/src/COPYING.txt publish-${DOTNET_RUNTIME}/LICENSES/LICENSE.BeaEngine.GPL.txt
-          cp beaengine/src/COPYING.LESSER.txt publish-${DOTNET_RUNTIME}/LICENSES/LICENSE.BeaEngine.LGPL.txt
-
-      - name: Upload publish folder
-        uses: actions/upload-artifact@v7
-        with:
-          name: de4dotEx-${{ env.DOTNET_RUNTIME }}-linux-x64
-          path: publish-${{ env.DOTNET_RUNTIME }}
-
-      - name: Extract version from Git tag
-        if: startsWith(github.ref, 'refs/tags/')
-        id: get_version
+          dotnet publish -c Release -f "$DOTNET_RUNTIME" -r "${{ matrix.rid }}" \
+            --self-contained true -o "publish-${{ matrix.rid }}" de4dot
+          rm -f "publish-${{ matrix.rid }}"/*.pdb "publish-${{ matrix.rid }}"/*.xml
+      - name: Build BeaEngine
+        shell: bash
         run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
-          echo "VERSION=$VERSION" >> $GITHUB_OUTPUT
+          set -euo pipefail
+          git clone --depth 1 --branch "$BEAENGINE_TAG" https://github.com/BeaEngine/beaengine.git
+          if [[ "$RUNNER_OS" == "Windows" ]]; then
+            sed -i.bak -E '/[[:space:]]*list[[:space:]]*\(APPEND[[:space:]]+BEA_FLAGS[[:space:]]+\/M/d' beaengine/CMakeLists.txt
+            cmake -S beaengine -B build-beaengine -A "${{ matrix.cmake_arch }}" \
+              -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF \
+              -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+            cmake --build build-beaengine --config Release
+            native_library=$(find build-beaengine -iname 'BeaEngine*.dll' | head -n 1)
+          else
+            cmake -S beaengine -B build-beaengine \
+              -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF
+            cmake --build build-beaengine
+            native_library=$(find build-beaengine -name "${{ matrix.library }}" | head -n 1)
+          fi
+          [[ -n "$native_library" ]] || { echo "BeaEngine library not found"; exit 1; }
+          cp "$native_library" "publish-${{ matrix.rid }}/${{ matrix.library }}"
+          mkdir -p "publish-${{ matrix.rid }}/LICENSES"
+          cp beaengine/src/COPYING.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.GPL.txt"
+          cp beaengine/src/COPYING.LESSER.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.LGPL.txt"
+      - uses: actions/upload-artifact@v7
+        with:
+          name: de4dotEx-${{ env.DOTNET_RUNTIME }}-${{ matrix.rid }}
+          path: publish-${{ matrix.rid }}
 
       - name: Create .deb package
-        if: startsWith(github.ref, 'refs/tags/')
+        if: matrix.rid == 'linux-x64' && startsWith(github.ref, 'refs/tags/')
+        shell: bash
         run: |
-          mkdir -p deb-root/opt/de4dotEx
-          cp -r publish-${DOTNET_RUNTIME}/* deb-root/opt/de4dotEx/
-
-          mkdir -p deb-root/usr/local/bin
+          set -euo pipefail
+          version="${GITHUB_REF#refs/tags/}"
+          mkdir -p deb-root/opt/de4dotEx deb-root/usr/local/bin deb-root/DEBIAN
+          cp -r "publish-${{ matrix.rid }}"/* deb-root/opt/de4dotEx/
           ln -s /opt/de4dotEx/de4dot deb-root/usr/local/bin/de4dot
-
-          mkdir -p deb-root/DEBIAN
-          cat <<EOF > deb-root/DEBIAN/control
+          cat > deb-root/DEBIAN/control <<EOF
           Package: de4dotEx
-          Version: ${{ steps.get_version.outputs.VERSION }}
+          Version: $version
           Section: utils
           Priority: optional
           Architecture: amd64
           Maintainer: G DATA Advanced Analytics GmbH <mwa@gdata-adan.de>
           Depends: libicu78 | libicu77 | libicu76 | libicu74 | libicu72 | libicu70 | libicu67 | libicu66
           Description: .NET deobfuscator and unpacker
-           de4dot is a .NET deobfuscator and unpacker. It will try its best to
-           restore a packed and obfuscated assembly to almost the original
-           assembly.
-           .
-           Most of the obfuscation can be completely restored (e.g., string
-           encryption), but symbol renaming is impossible to restore since the
-           original names aren't (usually) part of the obfuscated assembly.
+           de4dot is a .NET deobfuscator and unpacker.
           EOF
-
-          dpkg-deb --build deb-root de4dotEx-${{ steps.get_version.outputs.VERSION }}.deb
-
+          dpkg-deb --build deb-root "de4dotEx-${version}.deb"
       - uses: actions/upload-artifact@v7
-        if: startsWith(github.ref, 'refs/tags/')
+        if: matrix.rid == 'linux-x64' && startsWith(github.ref, 'refs/tags/')
         with:
-          name: de4dotEx-${{ steps.get_version.outputs.VERSION }}-${{ env.DOTNET_RUNTIME }}-x64-deb
-          path: de4dotEx-${{ steps.get_version.outputs.VERSION }}.deb
-          archive: false
+          name: de4dotEx-${{ github.ref_name }}-${{ env.DOTNET_RUNTIME }}-x64-deb
+          path: de4dotEx-${{ github.ref_name }}.deb
 
   publish-docker:
     name: Publish Docker image
     runs-on: ubuntu-latest
     if: startsWith(github.ref, 'refs/tags/')
-
     permissions:
       contents: read
       packages: write
-
     steps:
-      - name: Check out repository
-        uses: actions/checkout@v6
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v4
-
-      - name: Log in to GitHub Container Registry
-        uses: docker/login-action@v4
+      - uses: actions/checkout@v6
+      - uses: docker/setup-buildx-action@v4
+      - uses: docker/login-action@v4
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Set Docker image metadata for GHCR
+      - name: Set Docker image metadata
         id: docker_meta
         shell: bash
         run: |
-          VERSION="${GITHUB_REF#refs/tags/}"
-          IMAGE="${GITHUB_REPOSITORY,,}"
-
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          echo "image=ghcr.io/$IMAGE" >> "$GITHUB_OUTPUT"
-
-      - name: Build and publish Docker image
-        uses: docker/build-push-action@v7
+          echo "version=${GITHUB_REF#refs/tags/}" >> "$GITHUB_OUTPUT"
+          echo "image=ghcr.io/${GITHUB_REPOSITORY,,}" >> "$GITHUB_OUTPUT"
+      - uses: docker/build-push-action@v7
         with:
           context: .
           push: true
