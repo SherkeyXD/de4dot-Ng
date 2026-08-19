@@ -1,11 +1,7 @@
 <Project>
 
   <PropertyGroup>
-    <De4DotNetFramework>false</De4DotNetFramework>
-    <De4DotNetFramework Condition=" '$(SolutionName)' == 'de4dot.netframework' ">true</De4DotNetFramework>
-    <!-- Two different sln files are used because some of the projects are only available when targetting .NET Framework -->
-    <TargetFrameworks Condition=" '$(De4DotNetFramework)' == 'true' ">net48</TargetFrameworks>
-    <TargetFrameworks Condition=" '$(De4DotNetFramework)' != 'true' ">net10.0</TargetFrameworks>
+    <TargetFramework>net10.0</TargetFramework>
     <Features>strict</Features>
     <LangVersion>14.0</LangVersion>
     <SignAssembly>true</SignAssembly>
@@ -16,13 +12,8 @@
     <DisableOutOfProcTaskHost>true</DisableOutOfProcTaskHost>
     <DnlibVersion>4.5.0</DnlibVersion>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)' == 'Release' And '$(De4DotNetFramework)' != 'true'">
+  <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <SelfContained>true</SelfContained>
   </PropertyGroup>
-
-  <!-- Enable compiling .NET Framework 4.8 targets natively on Linux/macOS using standard .NET SDK -->
-  <ItemGroup Condition=" '$(De4DotNetFramework)' == 'true' ">
-    <PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.3" PrivateAssets="All" />
-  </ItemGroup>
 
 </Project>

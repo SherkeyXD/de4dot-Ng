@@ -17,48 +17,6 @@ env:
   BEAENGINE_TAG: v5.3.0
 
 jobs:
-  build-net48:
-    name: Build .NET Framework 4.8 artifact
-    runs-on: windows-latest
-    steps:
-      - uses: actions/checkout@v6
-      - name: Set up .NET
-        uses: actions/setup-dotnet@v6
-        with:
-          dotnet-version: ${{ env.SETUP_DOTNET_VERSION }}
-      - name: Build
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $msbuildPath = Split-Path (& "${env:ProgramFiles(x86)}\Microsoft Visual Studio\Installer\vswhere.exe" -latest -requires Microsoft.Component.MSBuild -find MSBuild\Current\Bin\amd64\MSBuild.exe | Select-Object -First 1) -Parent
-          $env:PATH = "$msbuildPath;$env:PATH"
-          dotnet build -c Release -f net48 de4dot.netframework.sln
-          if ($LASTEXITCODE) { exit $LASTEXITCODE }
-          Remove-Item Release\net48\*.pdb, Release\net48\*.xml, Release\net48\Test.Rename.*
-      - name: Build BeaEngine for .NET Framework
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          git clone --depth 1 --branch $env:BEAENGINE_TAG https://github.com/BeaEngine/beaengine.git beaengine
-          $cmakelists = 'beaengine/CMakeLists.txt'
-          (Get-Content $cmakelists) |
-            Where-Object { $_ -notmatch '\s*list\s*\(APPEND\s+BEA_FLAGS\s+/M' } |
-            Set-Content $cmakelists
-          cmake -S beaengine -B build-beaengine-32 -A Win32 `
-            -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF `
-            -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
-          cmake --build build-beaengine-32 --config Release
-          $dll32 = Get-ChildItem -Recurse build-beaengine-32 -Filter BeaEngine*.dll | Select-Object -First 1
-          if (-not $dll32) { throw "32-bit BeaEngine.dll not found" }
-          Copy-Item $dll32.FullName Release/net48/BeaEngine.dll
-          New-Item -ItemType Directory -Force Release/net48/LICENSES | Out-Null
-          Copy-Item beaengine/src/COPYING.txt Release/net48/LICENSES/LICENSE.BeaEngine.GPL.txt
-          Copy-Item beaengine/src/COPYING.LESSER.txt Release/net48/LICENSES/LICENSE.BeaEngine.LGPL.txt
-      - uses: actions/upload-artifact@v7
-        with:
-          name: de4dotEx-net48
-          path: Release/net48
-
   build-native:
     name: Build ${{ matrix.rid }} artifact
     strategy:
@@ -105,14 +63,16 @@ jobs:
             sed -i.bak -E '/[[:space:]]*list[[:space:]]*\(APPEND[[:space:]]+BEA_FLAGS[[:space:]]+\/M/d' beaengine/CMakeLists.txt
             cmake -S beaengine -B build-beaengine -A "${{ matrix.cmake_arch }}" \
               -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF \
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
               -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
             cmake --build build-beaengine --config Release
             native_library=$(find build-beaengine -iname 'BeaEngine*.dll' | head -n 1)
           else
             cmake -S beaengine -B build-beaengine \
-              -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF
+              -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF \
+              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
             cmake --build build-beaengine
-            native_library=$(find build-beaengine -name "${{ matrix.library }}" | head -n 1)
+            native_library=$(find build-beaengine -type f \( -name 'libBeaEngine*.so' -o -name 'libBeaEngine*.dylib' \) | head -n 1)
           fi
           [[ -n "$native_library" ]] || { echo "BeaEngine library not found"; exit 1; }
           cp "$native_library" "publish-${{ matrix.rid }}/${{ matrix.library }}"

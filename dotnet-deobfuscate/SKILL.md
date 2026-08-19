@@ -19,8 +19,8 @@ When triaging files using static analysis tools like **Detect It Easy (DiE)**, m
 | **Protector: Babel.NET** | Babel.NET | `de4dot <file>` or force: `-p bl` |
 | **Protector: SmartAssembly** | SmartAssembly | `de4dot <file>` or force: `-p sa` |
 | **Protector: dotNET Reactor** | .NET Reactor | `de4dot <file>` or force: `-p dr4` |
-| **Protector: ILProtector** | ILProtector | `de4dot <file>` or force: `-p il` *(Requires Strategy B Wine Container)* |
-| **Protector: Agile.NET** | Agile.NET | `de4dot <file>` or force: `-p an` *(Requires Strategy B Wine Container)* |
+| **Protector: ILProtector** | ILProtector | `de4dot <file>` or force: `-p il` |
+| **Protector: Agile.NET** | Agile.NET | `de4dot <file>` or force: `-p an` |
 
 ---
 
@@ -61,17 +61,7 @@ Runs natively at peak speed. Fully supports ConfuserEx 1.X, Babel, and SmartAsse
 docker run --rm -v "$(pwd):/work" -w /work de4dotex <input_file> -o <output_file>
 ```
 
-### Mode B: Wine .NET 4.8 Container (JIT-hook / Dynamic)
-Required for protectors using native Windows memory APIs (ILProtector, Agile.NET).
-```bash
-# On Intel/AMD hosts:
-docker run --rm -v "$(pwd):/work" de4dotex-wine <input_file> -o <output_file>
-
-# On ARM64 Apple Silicon Mac hosts (Forces Rosetta 2 x86 translation):
-docker run --platform linux/amd64 --rm -v "$(pwd):/work" de4dotex-wine <input_file> -o <output_file>
-```
-
-### Mode C: Native C# Stdio MCP Server (AI Agent Integration)
+### Mode B: Native C# Stdio MCP Server (AI Agent Integration)
 Command for registering inside your MCP client config (`claude_desktop_config.json`):
 ```json
 "mcpServers": {

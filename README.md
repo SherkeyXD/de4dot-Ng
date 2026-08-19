@@ -230,9 +230,7 @@ Docker Containerization
 
 de4dotEx includes built-in cross-platform Docker containerization. You can build a single, lightweight container and run it in three different modes: as a standard command-line utility, as an HTTP Web API microservice, or as a containerized Stdio MCP server.
 
-We offer two different Docker strategies depending on your needs:
-1. **Strategy A (Native .NET 10 - Recommended):** Extremely fast, lightweight, and cross-platform. It automatically compiles the native C++ `BeaEngine` disassembler library inside the container so that advanced ConfuserEx deobfuscation works natively on Linux and macOS (ARM64/x64).
-2. **Strategy B (Wine + .NET Framework 4.8):** Emulates a full Windows environment to support dynamic JIT-hook protectors (like ILProtector and Agile.NET) which rely on Windows-native memory APIs (`VirtualAlloc`, `VirtualProtect`).
+The native .NET 10 strategy is lightweight and cross-platform. It automatically compiles the native C++ `BeaEngine` disassembler library inside the container so that advanced ConfuserEx deobfuscation works natively on Linux and macOS (ARM64/x64).
 
 Strategy A: Native .NET 10 Linux Container (Recommended)
 --------------------------------------------------------
@@ -299,45 +297,11 @@ To run the containerized MCP server directly via Claude Desktop or Cursor, confi
 ```
 *(The `-i` flag is required to keep standard input open so the JSON-RPC streams can communicate securely.)*
 
-
-Strategy B: Wine-based Container (Full Windows Compatibility)
-------------------------------------------------------------
-
-This strategy configures a headless Wine environment on Ubuntu, installs the official .NET Framework runtime via `winetricks`, and executes the Windows `.NET Framework 4.8` assemblies under Wine.
-
-**Fully Automated Build:**
-Unlike older setups, this container uses a **multi-stage build** with a **Mono SDK** builder stage (`mono:6.12.0`) to automatically restore and compile the `.NET Framework 4.8` solution (`de4dot.netframework.sln`) inside the container. **You do not need to install .NET Framework or compile anything locally on your host machine!**
-
-### 1. Build the Wine Image
-Simply run this command to restore, compile, and package the complete Wine-compatible image:
-```bash
-docker build -t de4dotex-wine -f Dockerfile.wine .
-```
-
-### 2. Run the Wine Image
-Run the container using Wine. A virtual framebuffer (`Xvfb`) is configured automatically in the background to handle Wine's GUI requirements in headless environments.
-```bash
-# Run help
-docker run --rm de4dotex-wine --help
-
-# Deobfuscate an assembly requiring dynamic JIT-hook decryption (e.g. ILProtector, Agile.NET)
-docker run --rm -v "$(pwd):/work" de4dotex-wine MyProtectedApp.dll -o DecryptedApp.dll
-```
-
-
 Docker Troubleshooting & Tips
 -----------------------------
 
 ### Apple Silicon / ARM64 Mac Hosts (M1 / M2 / M3)
-* **Strategy A (Native):** Runs flawlessly on ARM64 hosts. Docker automatically targets ARM64 and compiles .NET 10 and BeaEngine natively for your CPU architecture.
-* **Strategy B (Wine):** Because Strategy B installs standard x86 `.NET Framework 4.8` components, you **MUST** force Docker to build and run the image targeting the Intel platform (`linux/amd64`). Docker Desktop on macOS will automatically translate the CPU instructions using Rosetta 2 / QEMU:
-  ```bash
-  # Build on ARM64 Mac using Intel emulation:
-  DOCKER_BUILDKIT=0 docker build --platform linux/amd64 -t de4dotex-wine -f Dockerfile.wine .
-
-  # Run on ARM64 Mac using Intel emulation:
-  docker run --platform linux/amd64 --rm -v "$(pwd):/work" de4dotex-wine MyProtectedApp.dll
-  ```
+* **Native:** Runs on ARM64 hosts. Docker automatically targets ARM64 and compiles .NET 10 and BeaEngine natively for your CPU architecture.
 
 ### Docker BuildKit / Buildx Errors (Legacy Builder Warnings)
 If you get a warning saying `DEPRECATED: The legacy builder is deprecated` or an error saying `BuildKit is enabled but the buildx component is missing or broken`, you can easily resolve this:
