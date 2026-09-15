@@ -288,13 +288,13 @@ curl -F "file=@MyObfuscatedApp.dll" \
      http://localhost:8080/deobfuscate -o CleanApp.dll
 ```
 
-You can also use our convenient test script **`test_api.sh`** to automatically perform the upload and save the processed output next to the original file, appending `_cleaned` (e.g. `App.dll` -> `App_cleaned.dll`):
+You can also use our convenient test script **`scripts/test_api.sh`** to automatically perform the upload and save the processed output next to the original file, appending `_cleaned` (e.g. `App.dll` -> `App_cleaned.dll`):
 ```bash
 # Basic usage:
-./test_api.sh MyObfuscatedApp.dll
+./scripts/test_api.sh MyObfuscatedApp.dll
 
 # Usage with custom flags:
-./test_api.sh MyObfuscatedApp.dll "--preserve-tokens -str delegate"
+./scripts/test_api.sh MyObfuscatedApp.dll "--preserve-tokens -str delegate"
 ```
 
 #### C. Run as containerized Stdio MCP server (for AI clients):
