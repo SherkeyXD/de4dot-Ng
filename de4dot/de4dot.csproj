@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\De4DotCommon.props" />
-
   <PropertyGroup>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
@@ -10,7 +8,7 @@
     <ProjectReference Include="..\de4dot.cui\de4dot.cui.csproj" />
   </ItemGroup>
 
-   <ItemGroup>
+  <ItemGroup>
     <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\LICENSE.*" />
     <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\COPYING" />
   </ItemGroup>

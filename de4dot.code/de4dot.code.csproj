@@ -1,7 +1,5 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <Import Project="..\De4DotCommon.props" />
-
   <PropertyGroup>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <NoWarn>$(NoWarn);SYSLIB0011</NoWarn>
@@ -22,11 +20,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Reference Include="System.Runtime.Remoting" Condition=" '$(De4DotNetFramework)' == 'true' " />
-  </ItemGroup>
-
-  <ItemGroup>
-    <PackageReference Include="System.Drawing.Common" Version="10.0.11" Condition=" '$(De4DotNetFramework)' != 'true' " />
+    <PackageReference Include="System.Drawing.Common" />
   </ItemGroup>
 
 </Project>

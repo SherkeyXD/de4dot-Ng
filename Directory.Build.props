@@ -4,14 +4,18 @@
     <TargetFramework>net10.0</TargetFramework>
     <Features>strict</Features>
     <LangVersion>14.0</LangVersion>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Deterministic>true</Deterministic>
     <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)\de4dot.snk</AssemblyOriginatorKeyFile>
+    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)de4dot.snk</AssemblyOriginatorKeyFile>
     <VersionPrefix>3.9.0</VersionPrefix>
+    <Authors>0xd4d, G DATA Advanced Analytics GmbH</Authors>
+    <Company>G DATA Advanced Analytics GmbH</Company>
     <Copyright>Copyright (C) 2011-2020 de4dot@gmail.com, 2025-2026 G DATA Advanced Analytics GmbH</Copyright>
-    <OutputPath>$(MSBuildThisFileDirectory)\$(Configuration)</OutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)$(Configuration)</OutputPath>
     <DisableOutOfProcTaskHost>true</DisableOutOfProcTaskHost>
-    <DnlibVersion>4.5.0</DnlibVersion>
   </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <SelfContained>true</SelfContained>
   </PropertyGroup>
