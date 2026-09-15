@@ -5,25 +5,17 @@ FROM ubuntu:22.04 AS beaengine-builder
 ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt-get update && apt-get install -y \
-    git \
     cmake \
     build-essential \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /src
-RUN git clone --depth 1 --branch v5.3.0 https://github.com/BeaEngine/beaengine.git
+COPY native/BeaEngine ./native/BeaEngine
 
-RUN cmake -S beaengine -B build64 \
-    -DoptBUILD_DLL=ON \
-    -DoptHAS_OPTIMIZED=ON \
-    -DoptHAS_SYMBOLS=OFF
-
-RUN cmake --build build64
-
-# Dynamically locate and move the compiled .so to a standardized path
-RUN mkdir -p /app && \
-    SO_FILE=$(find build64 -name "libBeaEngine*.so" | head -n 1) && \
-    if [ -n "$SO_FILE" ]; then cp "$SO_FILE" /app/libBeaEngine.so; else echo "Error: libBeaEngine.so not found!" && exit 1; fi
+RUN cmake -S native/BeaEngine -B build -DCMAKE_BUILD_TYPE=Release \
+    && cmake --build build \
+    && mkdir -p /app \
+    && cp build/bin/libBeaEngine.so /app/libBeaEngine.so
 
 # ==============================================================================
 # STAGE 2: Build de4dotEx (.NET 10 Cross-Platform Release)

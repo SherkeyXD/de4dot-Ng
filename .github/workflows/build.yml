@@ -14,7 +14,6 @@ permissions:
 env:
   DOTNET_RUNTIME: net10.0
   SETUP_DOTNET_VERSION: 10.0.x
-  BEAENGINE_TAG: v5.3.0
 
 jobs:
   build-native:
@@ -58,27 +57,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          git clone --depth 1 --branch "$BEAENGINE_TAG" https://github.com/BeaEngine/beaengine.git
           if [[ "$RUNNER_OS" == "Windows" ]]; then
-            sed -i.bak -E '/[[:space:]]*list[[:space:]]*\(APPEND[[:space:]]+BEA_FLAGS[[:space:]]+\/M/d' beaengine/CMakeLists.txt
-            cmake -S beaengine -B build-beaengine -A "${{ matrix.cmake_arch }}" \
-              -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF \
-              -DCMAKE_POLICY_VERSION_MINIMUM=3.5 \
-              -DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded
+            cmake -S native/BeaEngine -B build-beaengine -A "${{ matrix.cmake_arch }}" \
+              -DCMAKE_BUILD_TYPE=Release
             cmake --build build-beaengine --config Release
-            native_library=$(find build-beaengine -iname 'BeaEngine*.dll' | head -n 1)
           else
-            cmake -S beaengine -B build-beaengine \
-              -DoptBUILD_DLL=ON -DoptHAS_OPTIMIZED=ON -DoptHAS_SYMBOLS=OFF \
-              -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-            cmake --build build-beaengine
-            native_library=$(find build-beaengine -type f \( -name 'libBeaEngine*.so' -o -name 'libBeaEngine*.dylib' \) | head -n 1)
+            cmake -S native/BeaEngine -B build-beaengine \
+              -DCMAKE_BUILD_TYPE=Release
+            cmake --build build-beaengine --config Release
           fi
+          native_library=$(find build-beaengine/bin -type f \( -name "${{ matrix.library }}" -o -iname "BeaEngine*.dll" \) | head -n 1)
           [[ -n "$native_library" ]] || { echo "BeaEngine library not found"; exit 1; }
           cp "$native_library" "publish-${{ matrix.rid }}/${{ matrix.library }}"
           mkdir -p "publish-${{ matrix.rid }}/LICENSES"
-          cp beaengine/src/COPYING.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.GPL.txt"
-          cp beaengine/src/COPYING.LESSER.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.LGPL.txt"
+          cp native/BeaEngine/COPYING.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.GPL.txt"
+          cp native/BeaEngine/COPYING.LESSER.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.LGPL.txt"
       - uses: actions/upload-artifact@v7
         with:
           name: de4dotEx-${{ env.DOTNET_RUNTIME }}-${{ matrix.rid }}
