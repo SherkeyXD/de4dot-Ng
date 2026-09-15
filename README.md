@@ -85,7 +85,7 @@ Supported obfuscators/packers
 * CodeVeil
 * CodeWall
 * Confuser
-* ConfuserEx - Merged from https://github.com/ViRb3/de4dot-cex , [read the full README by @ViRb3](README-CEx.md) for more info. BeaEngine (`5.3.0`) native library source is vendored in `native/BeaEngine` and built automatically during local builds and CI.
+* ConfuserEx - Merged from https://github.com/ViRb3/de4dot-cex , [read the full README by @ViRb3](docs/README-CEx.md) for more info. BeaEngine (`5.3.0`) native library source is vendored in `native/BeaEngine` and built automatically during local builds and CI.
 * CryptoObfuscator
 * DeepSea Obfuscator
 * Dotfuscator
@@ -101,7 +101,7 @@ Supported obfuscators/packers
 * Skater.NET
 * SmartAssembly
 * Spices.Net
-* VirtualGuard - Merged from https://github.com/mrT4ntr4/de4dot-vg , [read the full README by @mrT4ntr4](README-vg.md) for more info
+* VirtualGuard - Merged from https://github.com/mrT4ntr4/de4dot-vg , [read the full README by @mrT4ntr4](docs/README-vg.md) for more info
 * Xenocode
 
 Some of the above obfuscators are rarely used (eg. Goliath.NET), so they have had much less testing. Help me out by reporting bugs or problems you find.
