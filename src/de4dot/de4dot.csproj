@@ -9,7 +9,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\..\LICENSE.*" />
+    <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\..\licenses\*" />
     <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\..\COPYING" />
   </ItemGroup>
 

@@ -69,9 +69,6 @@ jobs:
           native_library=$(find build-beaengine/bin -type f \( -name "${{ matrix.library }}" -o -iname "BeaEngine*.dll" \) | head -n 1)
           [[ -n "$native_library" ]] || { echo "BeaEngine library not found"; exit 1; }
           cp "$native_library" "publish-${{ matrix.rid }}/${{ matrix.library }}"
-          mkdir -p "publish-${{ matrix.rid }}/LICENSES"
-          cp native/BeaEngine/COPYING.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.GPL.txt"
-          cp native/BeaEngine/COPYING.LESSER.txt "publish-${{ matrix.rid }}/LICENSES/LICENSE.BeaEngine.LGPL.txt"
       - uses: actions/upload-artifact@v7
         with:
           name: de4dotEx-${{ env.DOTNET_RUNTIME }}-${{ matrix.rid }}
