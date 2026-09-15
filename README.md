@@ -18,6 +18,26 @@ Binaries
 
 Get binaries from the build server [![](https://github.com/GDATAAdvancedAnalytics/de4dotEx/workflows/CI%20build/badge.svg)](https://github.com/GDATAAdvancedAnalytics/de4dotEx/actions).
 
+Building from Source
+====================
+
+Requirements:
+* [.NET SDK 10.0](https://dotnet.microsoft.com/download)
+* [CMake](https://cmake.org/) (version 3.15+) for building native BeaEngine
+* C compiler (MSVC on Windows, GCC/Clang on Linux/macOS)
+
+### Quick Build (Cross-Platform)
+* **Linux / macOS:**
+  ```bash
+  ./build.sh
+  ```
+* **Windows (PowerShell):**
+  ```powershell
+  .\build.ps1
+  ```
+
+This publishes `de4dot`, `de4dot.mcp`, compiles `native/BeaEngine`, and outputs ready-to-run binaries into `./publish-net10.0/` and `./publish-net10.0-mcp/`.
+
 Docker & MCP Server Support
 ===========================
 
@@ -65,7 +85,7 @@ Supported obfuscators/packers
 * CodeVeil
 * CodeWall
 * Confuser
-* ConfuserEx - Merged from https://github.com/ViRb3/de4dot-cex , [read the full README by @ViRb3](README-CEx.md) for more info. You may need a native library for [BeaEngine](https://github.com/BeaEngine/beaengine) (version `5.3.0`) for your platform to use the corresponding functionality! If you use another version you may need to recompile with the updated [C# bindings](https://github.com/BeaEngine/beaengine/tree/master/headers/C%23%20headers).
+* ConfuserEx - Merged from https://github.com/ViRb3/de4dot-cex , [read the full README by @ViRb3](README-CEx.md) for more info. BeaEngine (`5.3.0`) native library source is vendored in `native/BeaEngine` and built automatically during local builds and CI.
 * CryptoObfuscator
 * DeepSea Obfuscator
 * Dotfuscator
@@ -341,9 +361,9 @@ Deobfuscate and unpack a .NET assembly (EXE or DLL) using de4dotEx.
 How to Build the MCP Server
 ---------------------------
 
-You can build the MCP server using the standard `dotnet` CLI:
+You can build the MCP server using `./build.sh` / `.\build.ps1` or standard `dotnet` CLI:
 ```bash
-dotnet publish -c Release -f net10.0 -o ./publish-net10.0-mcp de4dot.mcp
+dotnet publish -c Release -f net10.0 -o ./publish-net10.0-mcp src/de4dot.mcp
 ```
 After building, the published files (including the binary and its dependencies) will be placed in the `./publish-net10.0-mcp/` directory.
 
