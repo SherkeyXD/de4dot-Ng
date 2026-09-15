@@ -1,11 +1,58 @@
-*~
+# Operating System Files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Editor and IDE Files
 .vs/
-bin/
-obj/
-Release/
-Debug/
-publish-netcoreapp*/
-publish-net*/
-launchSettings.json
+.idea/
+*.suo
 *.user
+*.userosv
+*.sln.docstates
+*.DotSettings.user
+_ReSharper*/
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+launchSettings.json
+
+# Build and Compilation Artifacts (.NET)
+[Bb]in/
+[Oo]bj/
+[Dd]ebug/
+[Rr]elease/
+publish/
+publish-*/
+TestResults/
+*.trx
+
+# NuGet Packages
+*.nupkg
+*.snupkg
+
+# Native and CMake Build Artifacts
+build/
 build-*/
+CMakeCache.txt
+CMakeFiles/
+cmake_install.cmake
+compile_commands.json
+CTestTestfile.cmake
+Makefile
+*.ilk
+*.exp
+
+# Temporary and Backup Files
+*~
+*.bak
+*.swp
+*.swo
