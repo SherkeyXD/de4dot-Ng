@@ -27,8 +27,8 @@ WORKDIR /src
 COPY . .
 
 # Publish both de4dot and the de4dot.mcp server targeting net10.0
-RUN dotnet publish -c Release -f net10.0 -o /app/publish/de4dot de4dot/de4dot.csproj
-RUN dotnet publish -c Release -f net10.0 -o /app/publish/mcp de4dot.mcp/de4dot.mcp.csproj
+RUN dotnet publish -c Release -f net10.0 -o /app/publish/de4dot src/de4dot/de4dot.csproj
+RUN dotnet publish -c Release -f net10.0 -o /app/publish/mcp src/de4dot.mcp/de4dot.mcp.csproj
 RUN rm -rf /app/publish/**/*.pdb /app/publish/**/*.xml
 
 # ==============================================================================

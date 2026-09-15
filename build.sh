@@ -8,10 +8,10 @@ SKIP_NATIVE="${SKIP_NATIVE:-false}"
 OUT_DIR="publish-${FRAMEWORK}"
 MCP_OUT_DIR="publish-${FRAMEWORK}-mcp"
 
-dotnet publish -c "$CONFIGURATION" -f "$FRAMEWORK" -o "$OUT_DIR" de4dot
+dotnet publish -c "$CONFIGURATION" -f "$FRAMEWORK" -o "$OUT_DIR" src/de4dot
 rm -f "$OUT_DIR"/*.pdb "$OUT_DIR"/*.xml
 
-dotnet publish -c "$CONFIGURATION" -f "$FRAMEWORK" -o "$MCP_OUT_DIR" de4dot.mcp
+dotnet publish -c "$CONFIGURATION" -f "$FRAMEWORK" -o "$MCP_OUT_DIR" src/de4dot.mcp
 rm -f "$MCP_OUT_DIR"/*.pdb "$MCP_OUT_DIR"/*.xml
 
 if [[ "$SKIP_NATIVE" != "true" ]]; then

@@ -9,11 +9,11 @@ $ErrorActionPreference = 'Stop'
 $outDir = "publish-$Framework"
 $mcpOutDir = "publish-$Framework-mcp"
 
-dotnet publish -c $Configuration -f $Framework -o $outDir de4dot
+dotnet publish -c $Configuration -f $Framework -o $outDir src/de4dot
 if ($LASTEXITCODE) { exit $LASTEXITCODE }
 Remove-Item "$outDir\*.pdb", "$outDir\*.xml" -ErrorAction SilentlyContinue
 
-dotnet publish -c $Configuration -f $Framework -o $mcpOutDir de4dot.mcp
+dotnet publish -c $Configuration -f $Framework -o $mcpOutDir src/de4dot.mcp
 if ($LASTEXITCODE) { exit $LASTEXITCODE }
 Remove-Item "$mcpOutDir\*.pdb", "$mcpOutDir\*.xml" -ErrorAction SilentlyContinue
 

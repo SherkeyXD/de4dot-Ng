@@ -3,23 +3,23 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 15.0.26206.0
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.code", "de4dot.code\de4dot.code.csproj", "{4D10B9EB-3BF1-4D61-A389-CB019E8C9622}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.code", "src\de4dot.code\de4dot.code.csproj", "{4D10B9EB-3BF1-4D61-A389-CB019E8C9622}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Rename", "Test.Rename\Test.Rename.csproj", "{3FEB2023-B4B0-4DF3-BECF-AD727B55FF37}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Rename", "tests\Test.Rename\Test.Rename.csproj", "{3FEB2023-B4B0-4DF3-BECF-AD727B55FF37}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Rename.Dll", "Test.Rename.Dll\Test.Rename.Dll.csproj", "{3B408415-5203-4618-ABC1-F88D0BBE849B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test.Rename.Dll", "tests\Test.Rename.Dll\Test.Rename.Dll.csproj", "{3B408415-5203-4618-ABC1-F88D0BBE849B}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyData", "AssemblyData\AssemblyData.csproj", "{FBD84077-9D35-41FE-89DF-8D79EFE0B595}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AssemblyData", "src\AssemblyData\AssemblyData.csproj", "{FBD84077-9D35-41FE-89DF-8D79EFE0B595}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot", "de4dot\de4dot.csproj", "{004EB657-252C-4361-A2D2-2E514130C7FC}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot", "src\de4dot\de4dot.csproj", "{004EB657-252C-4361-A2D2-2E514130C7FC}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.blocks", "de4dot.blocks\de4dot.blocks.csproj", "{045B96F2-AF80-4C4C-8D27-E38635AC705E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.blocks", "src\de4dot.blocks\de4dot.blocks.csproj", "{045B96F2-AF80-4C4C-8D27-E38635AC705E}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.cui", "de4dot.cui\de4dot.cui.csproj", "{879E4A7E-C320-42D2-8275-4F1E44CE64AA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.cui", "src\de4dot.cui\de4dot.cui.csproj", "{879E4A7E-C320-42D2-8275-4F1E44CE64AA}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.mdecrypt", "de4dot.mdecrypt\de4dot.mdecrypt.csproj", "{5C93C5E2-196F-4877-BF65-96FEBFCEFCA1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.mdecrypt", "src\de4dot.mdecrypt\de4dot.mdecrypt.csproj", "{5C93C5E2-196F-4877-BF65-96FEBFCEFCA1}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.mcp", "de4dot.mcp\de4dot.mcp.csproj", "{8F940F69-122B-4EFD-A7F2-4424A325CEE1}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "de4dot.mcp", "src\de4dot.mcp\de4dot.mcp.csproj", "{8F940F69-122B-4EFD-A7F2-4424A325CEE1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

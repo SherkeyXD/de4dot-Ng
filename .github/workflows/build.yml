@@ -51,7 +51,7 @@ jobs:
         run: |
           set -euo pipefail
           dotnet publish -c Release -f "$DOTNET_RUNTIME" -r "${{ matrix.rid }}" \
-            --self-contained true -o "publish-${{ matrix.rid }}" de4dot
+            --self-contained true -o "publish-${{ matrix.rid }}" src/de4dot
           rm -f "publish-${{ matrix.rid }}"/*.pdb "publish-${{ matrix.rid }}"/*.xml
       - name: Build BeaEngine
         shell: bash

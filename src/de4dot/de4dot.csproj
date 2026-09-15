@@ -9,8 +9,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\LICENSE.*" />
-    <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\COPYING" />
+    <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\..\LICENSE.*" />
+    <LicenseFiles Include="$(MSBuildThisFileDirectory)\..\..\COPYING" />
   </ItemGroup>
 
   <Target Name="CopyLicenseFiles_AfterBuild" AfterTargets="AfterBuild">

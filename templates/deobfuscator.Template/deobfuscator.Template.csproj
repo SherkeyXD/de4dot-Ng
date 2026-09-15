@@ -1,0 +1,10 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\AssemblyData\AssemblyData.csproj" />
+    <ProjectReference Include="..\..\src\de4dot.blocks\de4dot.blocks.csproj" />
+    <ProjectReference Include="..\..\src\de4dot.code\de4dot.code.csproj" />
+    <ProjectReference Include="..\..\src\de4dot.mdecrypt\de4dot.mdecrypt.csproj" />
+  </ItemGroup>
+
+</Project>
