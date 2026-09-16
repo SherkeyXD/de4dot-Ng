@@ -58,10 +58,12 @@ namespace ICSharpCode.SharpZipLib
 		/// </summary>
 		/// <param name="info"><see cref="System.Runtime.Serialization.SerializationInfo"/> for this constructor</param>
 		/// <param name="context"><see cref="StreamingContext"/> for this constructor</param>
+#pragma warning disable SYSLIB0051
 		protected SharpZipBaseException(SerializationInfo info, StreamingContext context )
 			: base( info, context )
 		{
 		}
+#pragma warning restore SYSLIB0051
 #endif
 		
 		/// <summary>

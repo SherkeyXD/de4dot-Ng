@@ -343,7 +343,7 @@ namespace de4dot.code.deobfuscators.CryptoObfuscator {
 				var memStream = new MemoryStream((int)resourceStream.Length);
 				using (var des = DES.Create()) {
 					var iv = new byte[8];
-					sourceStream.Read(iv, 0, 8);
+					sourceStream.ReadExactly(iv, 0, 8);
 					des.IV = iv;
 					des.Key = GetKey(sourceStream);
 
@@ -399,14 +399,14 @@ namespace de4dot.code.deobfuscators.CryptoObfuscator {
 			else {
 				int len = (int)(sourceStream.Length - sourceStream.Position);
 				byte[] data = new byte[len];
-				sourceStream.Read(data, 0, len);
+				sourceStream.ReadExactly(data, 0, len);
 				return data;
 			}
 		}
 
 		byte[] GetKey(Stream resourceStream) {
 			byte[] key = new byte[8];
-			resourceStream.Read(key, 0, key.Length);
+			resourceStream.ReadExactly(key, 0, key.Length);
 			for (int i = 0; i < key.Length; i++) {
 				if (key[i] != 0)
 					return key;

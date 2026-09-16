@@ -188,10 +188,10 @@ public class Vault {
 			bytes = ComplicatedDerive(password, salt, _intFromCctor);
 		}
 		else {
-#pragma warning disable SYSLIB0041
+#pragma warning disable SYSLIB0041, SYSLIB0060
 			using var rfc2898DeriveBytes = new Rfc2898DeriveBytes(password, salt, _intFromCctor);
 			bytes = rfc2898DeriveBytes.GetBytes(49);
-#pragma warning restore SYSLIB0041
+#pragma warning restore SYSLIB0041, SYSLIB0060
 		}
 
 		byte[] aesIv = new byte[16];
@@ -387,14 +387,14 @@ public class Vault {
 
 	static byte[] ComplicatedDerive(byte[] password, byte[] salt, int iters) {
 		byte[] first;
-#pragma warning disable SYSLIB0041
+#pragma warning disable SYSLIB0041, SYSLIB0060
 		using (var deriver1 = new Rfc2898DeriveBytes(password, salt, iters))
 			first = deriver1.GetBytes(32);
 		byte[] nextPassword = ScrambleDerive(first, salt, 32768);
 		byte[] result;
 		using (var deriver2 = new Rfc2898DeriveBytes(nextPassword, salt, 2048))
 			result = deriver2.GetBytes(49);
-#pragma warning restore SYSLIB0041
+#pragma warning restore SYSLIB0041, SYSLIB0060
 		return result;
 	}
 
