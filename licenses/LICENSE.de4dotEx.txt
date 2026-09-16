@@ -3,7 +3,8 @@
     Forked and continued as de4dotEx.
 
     Copyright (C) 2011-2020 de4dot@gmail.com
-    Copyright (C) 2025 G DATA Advanced Analytics GmbH
+    Copyright (C) 2025-2026 G DATA Advanced Analytics GmbH
+    Copyright (C) 2026 SherkeyXD and contributors
 
     de4dotEx is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -19,6 +20,6 @@
     along with de4dotEx.  If not, see <http://www.gnu.org/licenses/>.
 </LICENSE>
 
-Official site: https://github.com/GDATAAdvancedAnalytics/de4dotEx
+Official site: https://github.com/SherkeyXD/de4dot-Ng
 
-See the file COPYING for more details.
+See the file LICENSE for more details.

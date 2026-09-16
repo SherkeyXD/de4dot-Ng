@@ -7,9 +7,10 @@
     <ImplicitUsings>disable</ImplicitUsings>
     <Deterministic>true</Deterministic>
     <VersionPrefix>3.9.0</VersionPrefix>
-    <Authors>0xd4d, G DATA Advanced Analytics GmbH</Authors>
+    <Authors>0xd4d, G DATA Advanced Analytics GmbH, SherkeyXD</Authors>
     <Company>G DATA Advanced Analytics GmbH</Company>
-    <Copyright>Copyright (C) 2011-2020 de4dot@gmail.com, 2025-2026 G DATA Advanced Analytics GmbH</Copyright>
+    <Copyright>Copyright (C) 2011-2020 de4dot@gmail.com, 2025-2026 G DATA Advanced Analytics GmbH, 2026 SherkeyXD</Copyright>
+    <PackageLicenseExpression>GPL-3.0-or-later</PackageLicenseExpression>
     <OutputPath>$(MSBuildThisFileDirectory)build/$(Configuration)</OutputPath>
     <DisableOutOfProcTaskHost>true</DisableOutOfProcTaskHost>
   </PropertyGroup>
