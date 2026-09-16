@@ -9,8 +9,8 @@ CONFIGURATION="${1:-Release}"
 FRAMEWORK="${2:-net10.0}"
 SKIP_NATIVE="${SKIP_NATIVE:-false}"
 
-OUT_DIR="publish-${FRAMEWORK}"
-MCP_OUT_DIR="publish-${FRAMEWORK}-mcp"
+OUT_DIR="build/publish-${FRAMEWORK}"
+MCP_OUT_DIR="build/publish-${FRAMEWORK}-mcp"
 
 dotnet publish -c "$CONFIGURATION" -f "$FRAMEWORK" -o "$OUT_DIR" src/de4dot
 rm -f "$OUT_DIR"/*.pdb "$OUT_DIR"/*.xml
@@ -21,7 +21,7 @@ rm -f "$MCP_OUT_DIR"/*.pdb "$MCP_OUT_DIR"/*.xml
 if [[ "$SKIP_NATIVE" != "true" ]]; then
     if command -v cmake >/dev/null 2>&1; then
         echo "Building native BeaEngine library..."
-        build_dir="build-native"
+        build_dir="build/native"
         cmake -S native/BeaEngine -B "$build_dir" -DCMAKE_BUILD_TYPE="$CONFIGURATION"
         cmake --build "$build_dir" --config "$CONFIGURATION"
 

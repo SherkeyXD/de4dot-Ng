@@ -9,13 +9,18 @@ Push-Location $RepoRoot
 
 try {
     mkdir obj -Force | Out-Null
-    $de4dotExec = "$RepoRoot/Release/net10.0/win-x64/de4dot.exe"
-    if (-not (Test-Path $de4dotExec)) {
-        if (Test-Path "$RepoRoot/Release/net10.0/de4dot.exe") {
-            $de4dotExec = "$RepoRoot/Release/net10.0/de4dot.exe"
-        } elseif (Test-Path "$RepoRoot/Release/net10.0/de4dot") {
-            $de4dotExec = "$RepoRoot/Release/net10.0/de4dot"
-        }
+    $candidates = @(
+        "$RepoRoot/build/$Configuration/de4dot.exe",
+        "$RepoRoot/build/$Configuration/de4dot",
+        "$RepoRoot/build/publish-net10.0/de4dot.exe",
+        "$RepoRoot/build/publish-net10.0/de4dot",
+        "$RepoRoot/Release/net10.0/win-x64/de4dot.exe",
+        "$RepoRoot/Release/net10.0/de4dot.exe",
+        "$RepoRoot/Release/net10.0/de4dot"
+    )
+    $de4dotExec = $candidates | Where-Object { Test-Path $_ } | Select-Object -First 1
+    if (-not $de4dotExec) {
+        $de4dotExec = "$RepoRoot/build/$Configuration/de4dot"
     }
 
     function Test($item)

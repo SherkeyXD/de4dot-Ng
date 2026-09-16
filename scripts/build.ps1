@@ -10,8 +10,8 @@ $RepoRoot = (Resolve-Path "$PSScriptRoot/..").Path
 Push-Location $RepoRoot
 
 try {
-    $outDir = "publish-$Framework"
-    $mcpOutDir = "publish-$Framework-mcp"
+    $outDir = "build/publish-$Framework"
+    $mcpOutDir = "build/publish-$Framework-mcp"
 
     dotnet publish -c $Configuration -f $Framework -o $outDir src/de4dot
     if ($LASTEXITCODE) { exit $LASTEXITCODE }
@@ -24,7 +24,7 @@ try {
     if (-not $SkipNative) {
         if (Get-Command cmake -ErrorAction SilentlyContinue) {
             Write-Host "Building native BeaEngine library..."
-            $buildDir = "build-native"
+            $buildDir = "build/native"
             cmake -S native/BeaEngine -B $buildDir -DCMAKE_BUILD_TYPE=$Configuration
             if ($LASTEXITCODE) { exit $LASTEXITCODE }
             cmake --build $buildDir --config $Configuration

@@ -36,7 +36,7 @@ Requirements:
   .\build.ps1
   ```
 
-This publishes `de4dot`, `de4dot.mcp`, compiles `native/BeaEngine`, and outputs ready-to-run binaries into `./publish-net10.0/` and `./publish-net10.0-mcp/`.
+This publishes `de4dot`, `de4dot.mcp`, compiles `native/BeaEngine`, and outputs ready-to-run binaries into `./build/publish-net10.0/` and `./build/publish-net10.0-mcp/`.
 
 Docker & MCP Server Support
 ===========================
@@ -363,9 +363,9 @@ How to Build the MCP Server
 
 You can build the MCP server using `./build.sh` / `.\build.ps1` or standard `dotnet` CLI:
 ```bash
-dotnet publish -c Release -f net10.0 -o ./publish-net10.0-mcp src/de4dot.mcp
+dotnet publish -c Release -f net10.0 -o ./build/publish-net10.0-mcp src/de4dot.mcp
 ```
-After building, the published files (including the binary and its dependencies) will be placed in the `./publish-net10.0-mcp/` directory.
+After building, the published files (including the binary and its dependencies) will be placed in the `./build/publish-net10.0-mcp/` directory.
 
 How to Configure Your AI Client
 -------------------------------
@@ -384,7 +384,7 @@ Add the following block under the `mcpServers` object:
     "de4dotex": {
       "command": "dotnet",
       "args": [
-        "/absolute/path/to/de4dotEx/publish-net10.0-mcp/de4dot.mcp.dll"
+        "/absolute/path/to/de4dotEx/build/publish-net10.0-mcp/de4dot.mcp.dll"
       ]
     }
   }
@@ -397,5 +397,5 @@ Add the following block under the `mcpServers` object:
 2. Click **+ Add New MCP Server**.
 3. Name: `de4dotex`
 4. Type: `stdio`
-5. Command: `dotnet /absolute/path/to/de4dotEx/publish-net10.0-mcp/de4dot.mcp.dll`
+5. Command: `dotnet /absolute/path/to/de4dotEx/build/publish-net10.0-mcp/de4dot.mcp.dll`
 }

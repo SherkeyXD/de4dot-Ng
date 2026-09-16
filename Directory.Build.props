@@ -12,7 +12,7 @@
     <Authors>0xd4d, G DATA Advanced Analytics GmbH</Authors>
     <Company>G DATA Advanced Analytics GmbH</Company>
     <Copyright>Copyright (C) 2011-2020 de4dot@gmail.com, 2025-2026 G DATA Advanced Analytics GmbH</Copyright>
-    <OutputPath>$(MSBuildThisFileDirectory)$(Configuration)</OutputPath>
+    <OutputPath>$(MSBuildThisFileDirectory)build/$(Configuration)</OutputPath>
     <DisableOutOfProcTaskHost>true</DisableOutOfProcTaskHost>
   </PropertyGroup>
 
