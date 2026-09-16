@@ -24,6 +24,7 @@ _ReSharper*/
 !.vscode/launch.json
 !.vscode/extensions.json
 launchSettings.json
+*.snk
 
 # Build and Compilation Artifacts (.NET)
 [Bb]in/

@@ -6,8 +6,6 @@
     <LangVersion>14.0</LangVersion>
     <ImplicitUsings>disable</ImplicitUsings>
     <Deterministic>true</Deterministic>
-    <SignAssembly>true</SignAssembly>
-    <AssemblyOriginatorKeyFile>$(MSBuildThisFileDirectory)de4dot.snk</AssemblyOriginatorKeyFile>
     <VersionPrefix>3.9.0</VersionPrefix>
     <Authors>0xd4d, G DATA Advanced Analytics GmbH</Authors>
     <Company>G DATA Advanced Analytics GmbH</Company>
